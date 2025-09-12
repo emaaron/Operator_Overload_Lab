@@ -19,3 +19,4 @@ A simple C++ program using classes and vectors for storing banking information f
 |`GetAccountNumber()`|`std::string`|returns value from `accountNumber`
 |`GetAccountHolderName()`|`std::string`|returns value from `accountHolderName`
 |`GetBalance()`|`double`|returns value from `balance`
+> Aaron Vasquez
