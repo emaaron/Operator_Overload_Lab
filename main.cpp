@@ -121,6 +121,7 @@ public:
 
 	// Static function (Creating account)
 	static BankAccount createAccountFromInput() {
+		BankAccount createAccount;
 		int accountNum;
 		std::string accountName;
 
@@ -141,7 +142,16 @@ public:
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::getline(std::cin, accountName);
 		std::cout << std::endl;
-		return BankAccount(std::to_string(accountNum), accountName, 0.00);
+
+		createAccount.SetAccountHolderName(accountName);
+		createAccount = BankAccount(std::to_string(accountNum), createAccount.GetAccountHolderName(), createAccount.GetBalance());
+		return createAccount;
+	}
+
+	void SetAccountHolderName(std::string AccountHolderName)
+	{
+		accountHolderName = AccountHolderName;
+		return;
 	}
 
 	// Getters
