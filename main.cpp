@@ -1,20 +1,18 @@
 /*
 *	Name: Aaron Vasquez
-*	Date: September 11, 2025
+*	Date: September 20, 2025
 *	Program Purpose: Simple banking system meant for adding different bank accounts and classes having control while saving through vectors
-*	Assignment: Lab Activities: Objects and Classes I
+*	Assignment: Lab Activities: Advanced Objects and Classes II
 */
 
 // Imported libraries
-#include <iostream> // Imported standard library for input/output
-#include <string> // Imported for conversions and getting full name
-#include <vector> // Imported to store each BankAccount class
-#include <limits> // Imported for helping with input
-/*#include <stdlib.h> Optional: "Was going to use system("cls"); for clearing the console because of messy console after a while"*/
+#include <iostream>
+#include <string>
+#include <vector>
+#include <limits>
 
 // BankAccount Class
-class BankAccount
-{
+class BankAccount {
 public:
 	// Default Constructor
 	BankAccount()
@@ -23,25 +21,40 @@ public:
 		accountHolderName = "";
 		balance = 0.00;
 	}
+
 	// Parameterized Constructor
 	BankAccount(std::string AccountNumber, std::string AccountHolderName, double Balance)
 	{
-		// Store Parameters to according class private variable
 		accountNumber = AccountNumber;
 		accountHolderName = AccountHolderName;
 		balance = Balance;
 	}
-	// Setter for [accountHolderName]
-	void SetAccountHolderName(std::string AccountHolderName)
-	{
-		// Stores the Name to BankAccount private varaible accountHolderName
-		accountHolderName = AccountHolderName;
-		return;
+
+	// Constructor
+	BankAccount(const BankAccount& other) {
+		accountNumber = other.accountNumber;
+		accountHolderName = other.accountHolderName;
+		balance = other.balance;
 	}
-	// Function for adding funds to Account's
-	void Deposit(double amount)
+
+	// Assignment Operator
+	BankAccount& operator=(const BankAccount& other)
 	{
-		// Check values of amount before assigning the new results
+		if (this != &other)
+		{
+			accountNumber = other.accountNumber;
+			accountHolderName = other.accountHolderName;
+			balance = other.balance;
+		}
+		return *this;
+	}
+
+	// Destructor
+	~BankAccount() {}
+
+	// Arithmetic Operator (+=)
+	BankAccount& operator+=(double amount)
+	{
 		if (amount == 0)
 		{
 			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
@@ -54,11 +67,12 @@ public:
 			balance += amount;
 			std::cout << "New account balance: $" << balance << std::endl;
 		}
+		return *this;
 	}
-	// Function for removing funds to Account's
-	void Withdraw(double amount)
+
+	// Arithmetic Operator (-=)
+	BankAccount& operator-=(double amount)
 	{
-		// Check values of amount before assigning the new results
 		if (amount == 0)
 		{
 			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
@@ -75,13 +89,67 @@ public:
 			balance -= amount;
 			std::cout << "New account balance: $" << balance << std::endl;
 		}
+		return *this;
 	}
-	// Public Accessors (getters)
-	std::string GetAccountNumber() { return accountNumber; } // Return value of Account Number
-	std::string GetAccountHolderName() { return accountHolderName; } // Return value of Account Holder Name
-	double GetBalance() { return balance; } // Return Account Balance
+
+	// Comparison Operator (==)
+	bool operator==(const BankAccount& other) const {
+		return (accountNumber == other.accountNumber &&
+			accountHolderName == other.accountHolderName &&
+			balance == other.balance);
+	}
+
+	// Comparison Operator (<)
+	bool operator<(const BankAccount& other) const {
+		return (balance < other.balance);
+	}
+
+	// Comparison Operator (>)
+	bool operator>(const BankAccount& other) const {
+		return (balance > other.balance);
+	}
+
+	// Static function (Printing account)
+	static void printAccount(const BankAccount& account) {
+		std::cout << "Bank Info:"
+			<< "\nAccount Name: " << account.accountHolderName
+			<< "\nAccount Number: " << account.accountNumber
+			<< "\nCurrent Balance: $" << account.balance
+			<< std::endl;
+		return;
+	}
+
+	// Static function (Creating account)
+	static BankAccount createAccountFromInput() {
+		int accountNum;
+		std::string accountName;
+
+		std::cout << "Define a account number for the Bank Account." << std::endl;
+
+		std::cout << "> ";
+
+		while (!(std::cin >> accountNum))
+		{
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << "> ";
+		}
+		std::cout << std::endl;
+
+		std::cout << "Define a account name for the Bank Account." << std::endl;
+		std::cout << "> ";
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::getline(std::cin, accountName);
+		std::cout << std::endl;
+		return BankAccount(std::to_string(accountNum), accountName, 0.00);
+	}
+
+	// Getters
+	std::string GetAccountNumber() { return accountNumber; }
+	std::string GetAccountHolderName() { return accountHolderName; }
+	double GetBalance() { return balance; }
+
 private:
-	// Declared private variables (helping for each Account data)
 	std::string accountNumber;
 	std::string accountHolderName;
 	double balance;
@@ -89,25 +157,27 @@ private:
 
 int main()
 {
-	// Main program variables
-	BankAccount bank_Account;
+	// Main variables
+	BankAccount account;
 	std::vector<BankAccount> bank;
-	bool found;
 	int option, accountNum;
 	std::string accountName;
+	bool found = false;
 	double amount;
 
-	// Main program loop (Loops until 5 is entered)
+	// Main program loop (stops if 5 is entered)
 	do {
 		std::cout << "[Choose a option!]"
 			<< "\n1. Open Account"
-			<< "\n2. Check Account"
+			<< "\n2. See Account"
 			<< "\n3. Deposit"
 			<< "\n4. Withdraw"
-			<< "\n5. Quit" << std::endl;
+			<< "\n5. Quit"
+			<< std::endl;
 
-		// Input [option] with input checking for only numbers
 		std::cout << "> ";
+
+		// Input option
 		while (!(std::cin >> option))
 		{
 			std::cin.clear();
@@ -118,47 +188,29 @@ int main()
 
 		switch (option)
 		{
-		case 1: // Option = 1 (Option 1)
+		case 1: // option = 1 (Option 1)
+			account = BankAccount::createAccountFromInput();
 
-			// Generated message for entering a account number
-			std::cout << "Define a account number for the Bank Account." << std::endl;
+			found = false;
 
-			// Input [accountNum] (Checking for numbers firstly before converting into a string for class)
-			std::cout << "> ";
-			while (!(std::cin >> accountNum))
+			for (int i = 0; i < bank.size(); i++)
 			{
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				std::cout << "> ";
+				if (bank.at(i).GetAccountNumber() == account.GetAccountNumber() == true)
+				{
+					found = true;
+				}
 			}
+			if (found == false) { bank.push_back(account); }
+			else { std::cout << "Account number already exists to someone." << std::endl; }
 			std::cout << std::endl;
-
-			// Generate message for entering a account name
-			std::cout << "Define a account name for the Bank Account." << std::endl;
-
-			// Input [accountName] (getline is used to use either just first name or a full person's name)
-			std::cout << "> ";
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::getline(std::cin, accountName);
-			std::cout << std::endl;
-
-			// Import results into the BankAccount classes
-			bank_Account.SetAccountHolderName(accountName); // Use the class setter SetAccountHolderName() for defining the Bank Account Holder Name
-			bank_Account = BankAccount(std::to_string(accountNum), bank_Account.GetAccountHolderName(), bank_Account.GetBalance()); // std::to_string(accountNum) converts accountNum into a string because class purposes uses Bank Account Number in string
-			bank.push_back(bank_Account); // Store results into bank vector
 			break;
-		case 2: // Option = 2 (Option 2)
-			if (bank.empty()) // Check beforehand if the program just started and there is no info in the bank vector
+		case 2: // option = 2 (Option 2)
+			if (bank.empty())
 			{
-				// Generated message
 				std::cout << "Sorry but there are no accounts registered." << std::endl;
 			}
-			else
-			{
-				// Generated message
-				std::cout << "Please enter in your account number" << std::endl;
-
-				// Input [accountNum] (Verification/Get the specific user info from Bank Account Number)
+			else {
+				std::cout << "Please enter in your account number." << std::endl;
 				std::cout << "> ";
 				while (!(std::cin >> accountNum))
 				{
@@ -168,38 +220,30 @@ int main()
 				}
 				std::cout << std::endl;
 
-				// Loop to find the specific user from their Bank Account Number
 				found = false;
 				for (int i = 0; i < bank.size(); i++)
 				{
 					if (bank.at(i).GetAccountNumber() == std::to_string(accountNum))
 					{
-						found = true; // if found it'll now be true
-
-						// Generated message of users info
-						std::cout << "Bank Info:"
-							<< "\nAccount Name: " << bank.at(i).GetAccountHolderName()
-							<< "\nAccount Number: " << bank.at(i).GetAccountNumber()
-							<< "\nCurrent Balance: $" << bank.at(i).GetBalance() << std::endl;
+						found = true;
+						BankAccount::printAccount(bank.at(i));
 					}
 				}
-				// Return message if users bank account was not found
-				if (found != true) { std::cout << "Account was not found!" << std::endl; }
+				if (found != true)
+				{
+					std::cout << "Account was not found!" << std::endl;
+				}
 			}
 			std::cout << std::endl;
 			break;
-		case 3: // Option = 3 (Option 3)
-			if (bank.empty()) // Check beforehand if the program just started and there is no info in the bank vector
+		case 3: // option = 3 (Option 3)
+			if (bank.empty())
 			{
-				// Generated message
 				std::cout << "Sorry but there are no accounts registered." << std::endl;
 			}
 			else
 			{
-				// Generated message
 				std::cout << "Please enter in your account number." << std::endl;
-
-				// Input [accountNum] (Verification/Get the specific user info from Bank Account Number)
 				std::cout << "> ";
 				while (!(std::cin >> accountNum))
 				{
@@ -209,18 +253,13 @@ int main()
 				}
 				std::cout << std::endl;
 
-				// Loop to find the specific user from their Bank Account Number
 				found = false;
 				for (int i = 0; i < bank.size(); i++)
 				{
 					if (bank.at(i).GetAccountNumber() == std::to_string(accountNum))
 					{
-						found = true; // if found it'll now be true
-
-						// Prompts the user to enter the amount to deposit
+						found = true;
 						std::cout << "How much would you like to deposit?" << std::endl;
-
-						// Input [amount]
 						std::cout << "$ ";
 						while (!(std::cin >> amount))
 						{
@@ -229,28 +268,24 @@ int main()
 							std::cout << "$ ";
 						}
 						std::cout << std::endl;
-
-						// Store the amount to the users BankAccount balance
-						bank.at(i).Deposit(amount); // Added funds through the class
+						bank.at(i) += amount;
 					}
 				}
-				// Return message if users bank account was not found
-				if (found != true) { std::cout << "Account was not found!" << std::endl; }
+				if (found != true)
+				{
+					std::cout << "Account was not found!" << std::endl;
+				}
 			}
 			std::cout << std::endl;
 			break;
-		case 4: // Option = 4 (Option 4)
-			if (bank.empty()) // Check beforehand if the program just started and there is no info in the bank vector
+		case 4: // option = 4 (Option 4)
+			if (bank.empty())
 			{
-				// Generated message
 				std::cout << "Sorry but there are no accounts registered." << std::endl;
 			}
 			else
 			{
-				// Generated message
 				std::cout << "Please enter in your account number." << std::endl;
-
-				// Input [accountNum] (Verification/Get the specific user info from Bank Account Number)
 				std::cout << "> ";
 				while (!(std::cin >> accountNum))
 				{
@@ -260,18 +295,16 @@ int main()
 				}
 				std::cout << std::endl;
 
-				// Loop to find the specific user from their Bank Account Number
 				found = false;
 				for (int i = 0; i < bank.size(); i++)
 				{
 					if (bank.at(i).GetAccountNumber() == std::to_string(accountNum))
 					{
-						found = true; // if found it'll now be true
+						found = true;
 
-						// Prompts the user to enter the amount to withdraw
 						std::cout << "How much would you like to withdraw?" << std::endl;
 
-						// Input [amount]
+
 						std::cout << "$ ";
 						while (!(std::cin >> amount))
 						{
@@ -281,18 +314,21 @@ int main()
 						}
 						std::cout << std::endl;
 
-						// Subtract the amount to the users BankAccount balance
-						bank.at(i).Withdraw(amount);
+						bank.at(i) -= amount;
 					}
 				}
-				// Return message if users bank account was not found
-				if (found != true) { std::cout << "Account was not found!" << std::endl; }
+				if (found != true)
+				{
+					std::cout << "Account was not found!" << std::endl;
+				}
 			}
 			std::cout << std::endl;
 			break;
 		default:
 			continue; // Continue through input if option is not define as one of the cases
 		}
-	} while (option != 5); // Main program loop
+
+	} while (option != 5); // Main program end loop (If 5 entered it'll end program)
+
 	return 0;
 }
