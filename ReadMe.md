@@ -14,8 +14,6 @@ A simple C++ program using classes and vectors for storing banking information f
 |`BankAccount()`|`Constructor`| Default constructor.
 |`BankAccount()`|`Constructor`|Parameterized constructor.
 |`SetAccountHolderName()`|`void`|Sets `accountHolderName` from the parameter.
-|`Deposit()`|`void`|Adds parameter amount to `balance`.
-|`Withdraw()`|`void`|Removes amount from parameter to `balance`.
 |`GetAccountNumber()`|`std::string`|returns value from `accountNumber`.
 |`GetAccountHolderName()`|`std::string`|returns value from `accountHolderName`.
 |`GetBalance()`|`double`|returns value from `balance`
