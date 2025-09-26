@@ -55,40 +55,14 @@ public:
 	// Arithmetic Operator (+=)
 	BankAccount& operator+=(double amount)
 	{
-		if (amount == 0)
-		{
-			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
-		}
-		else if (amount < 0)
-		{
-			std::cout << "Invalid amount of money to deposit." << std::endl;
-		}
-		else {
-			balance += amount;
-			std::cout << "New account balance: $" << balance << std::endl;
-		}
+		balance += amount;
 		return *this;
 	}
 
 	// Arithmetic Operator (-=)
 	BankAccount& operator-=(double amount)
 	{
-		if (amount == 0)
-		{
-			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
-		}
-		else if (amount < 0)
-		{
-			std::cout << "Invalid amount of money to withdraw." << std::endl;
-		}
-		else if (amount > balance)
-		{
-			std::cout << "Not enough funds." << std::endl;
-		}
-		else {
-			balance -= amount;
-			std::cout << "New account balance: $" << balance << std::endl;
-		}
+		balance -= amount;
 		return *this;
 	}
 
@@ -152,6 +126,42 @@ public:
 	{
 		accountHolderName = AccountHolderName;
 		return;
+	}
+
+	void Deposit(double amount)
+	{
+		if (amount == 0)
+		{
+			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
+		}
+		else if (amount < 0)
+		{
+			std::cout << "Invalid amount of money to deposit." << std::endl;
+		}
+		else {
+			*this += amount;
+			std::cout << "New account balance: $" << balance << std::endl;
+		}
+	}
+
+	void Withdraw(double amount)
+	{
+		if (amount == 0)
+		{
+			std::cout << "Your balance did not change cause of invalid amount of 0." << std::endl;
+		}
+		else if (amount < 0)
+		{
+			std::cout << "Invalid amount of money to withdraw." << std::endl;
+		}
+		else if (amount > balance)
+		{
+			std::cout << "Not enough funds." << std::endl;
+		}
+		else {
+			*this -= amount;
+			std::cout << "New account balance: $" << balance << std::endl;
+		}
 	}
 
 	// Getters
@@ -278,7 +288,7 @@ int main()
 							std::cout << "$ ";
 						}
 						std::cout << std::endl;
-						bank.at(i) += amount;
+						bank.at(i).Deposit(amount);
 					}
 				}
 				if (found != true)
@@ -323,8 +333,7 @@ int main()
 							std::cout << "$ ";
 						}
 						std::cout << std::endl;
-
-						bank.at(i) -= amount;
+						bank.at(i).Withdraw(amount);
 					}
 				}
 				if (found != true)
